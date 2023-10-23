@@ -1,0 +1,44 @@
+// how to generated
+// $ pwd
+// go-grpc
+// $ protoc --go_out=. --go-grpc_out=. ./proto
+
+syntax = "proto3";
+
+option go_package = "./proto";
+
+package product_service;
+
+service ProductService {
+    // simple RPC (unary RPC)
+    rpc GetProduct(NoParam) returns (Product);
+    rpc GetProductById(ProductIdRequest) returns (Product);
+    // server streaming RPC
+    rpc GetProductServerStreaming(ProductIdList) returns (stream ProductList);
+    // client streaming RPC
+    rpc GetProductClientStreaming(stream ProductIdList) returns (ProductList);
+    // bidirectional RPC
+    rpc GetProductBidirectionalStreaming(stream ProductIdList) returns (stream ProductList);
+}
+
+// jika tidak mengirimkan parameter, tetap harus mendefinisikan NoParam
+// sebagai no parameter
+message NoParam {};
+
+message ProductIdRequest {
+    string product_id = 1;
+}
+
+message ProductIdList {
+    repeated ProductIdRequest productIdRequest = 1;
+}
+
+message Product {
+    string product_id = 1;
+    string name = 2;
+    int32 sku = 3;
+}
+
+message ProductList{
+    repeated Product product = 1;
+}
