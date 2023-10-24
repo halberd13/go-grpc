@@ -14,16 +14,22 @@ const (
 )
 
 func main() {
-	conn, err := grpc.Dial("10.159.10.78"+port,
+	conn, err := grpc.Dial("localhost"+port,
 		grpc.WithTransportCredentials(
 			insecure.NewCredentials()))
-
 	if err != nil {
-		log.Fatalf("Didnt connect : %v", err)
+		log.Fatalf("Didnt connect: %v", err)
 	}
-
 	defer conn.Close()
 
 	client := pb.NewProductServiceClient(conn)
-	CallGetProduct(client)
+
+	products := &pb.ProductIdList{
+		ProductIds: []string{"1", "2", "3", "4", "5", "6"},
+	}
+
+	// CallGetProduct(client)
+	// CallGetProductClientStream(client, products)
+	CallGetProductServerStream(client, products)
+
 }
