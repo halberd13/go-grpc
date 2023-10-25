@@ -28,6 +28,7 @@ type ProductServiceClient interface {
 	// server streaming RPC
 	GetProductServerStreaming(ctx context.Context, in *ProductIdList, opts ...grpc.CallOption) (ProductService_GetProductServerStreamingClient, error)
 	// client streaming RPC
+	// rpc GetProductClientStreaming(stream ProductIdList) returns (ProductList);
 	GetProductClientStreaming(ctx context.Context, opts ...grpc.CallOption) (ProductService_GetProductClientStreamingClient, error)
 	// bidirectional RPC
 	GetProductBidirectionalStreaming(ctx context.Context, opts ...grpc.CallOption) (ProductService_GetProductBidirectionalStreamingClient, error)
@@ -75,7 +76,7 @@ func (c *productServiceClient) GetProductServerStreaming(ctx context.Context, in
 }
 
 type ProductService_GetProductServerStreamingClient interface {
-	Recv() (*ProductList, error)
+	Recv() (*ProductIdResponse, error)
 	grpc.ClientStream
 }
 
@@ -83,8 +84,8 @@ type productServiceGetProductServerStreamingClient struct {
 	grpc.ClientStream
 }
 
-func (x *productServiceGetProductServerStreamingClient) Recv() (*ProductList, error) {
-	m := new(ProductList)
+func (x *productServiceGetProductServerStreamingClient) Recv() (*ProductIdResponse, error) {
+	m := new(ProductIdResponse)
 	if err := x.ClientStream.RecvMsg(m); err != nil {
 		return nil, err
 	}
@@ -101,8 +102,8 @@ func (c *productServiceClient) GetProductClientStreaming(ctx context.Context, op
 }
 
 type ProductService_GetProductClientStreamingClient interface {
-	Send(*ProductIdList) error
-	CloseAndRecv() (*ProductList, error)
+	Send(*ProductIdRequest) error
+	CloseAndRecv() (*ProductIdList, error)
 	grpc.ClientStream
 }
 
@@ -110,15 +111,15 @@ type productServiceGetProductClientStreamingClient struct {
 	grpc.ClientStream
 }
 
-func (x *productServiceGetProductClientStreamingClient) Send(m *ProductIdList) error {
+func (x *productServiceGetProductClientStreamingClient) Send(m *ProductIdRequest) error {
 	return x.ClientStream.SendMsg(m)
 }
 
-func (x *productServiceGetProductClientStreamingClient) CloseAndRecv() (*ProductList, error) {
+func (x *productServiceGetProductClientStreamingClient) CloseAndRecv() (*ProductIdList, error) {
 	if err := x.ClientStream.CloseSend(); err != nil {
 		return nil, err
 	}
-	m := new(ProductList)
+	m := new(ProductIdList)
 	if err := x.ClientStream.RecvMsg(m); err != nil {
 		return nil, err
 	}
@@ -135,8 +136,8 @@ func (c *productServiceClient) GetProductBidirectionalStreaming(ctx context.Cont
 }
 
 type ProductService_GetProductBidirectionalStreamingClient interface {
-	Send(*ProductIdList) error
-	Recv() (*ProductList, error)
+	Send(*ProductIdRequest) error
+	Recv() (*ProductIdResponse, error)
 	grpc.ClientStream
 }
 
@@ -144,12 +145,12 @@ type productServiceGetProductBidirectionalStreamingClient struct {
 	grpc.ClientStream
 }
 
-func (x *productServiceGetProductBidirectionalStreamingClient) Send(m *ProductIdList) error {
+func (x *productServiceGetProductBidirectionalStreamingClient) Send(m *ProductIdRequest) error {
 	return x.ClientStream.SendMsg(m)
 }
 
-func (x *productServiceGetProductBidirectionalStreamingClient) Recv() (*ProductList, error) {
-	m := new(ProductList)
+func (x *productServiceGetProductBidirectionalStreamingClient) Recv() (*ProductIdResponse, error) {
+	m := new(ProductIdResponse)
 	if err := x.ClientStream.RecvMsg(m); err != nil {
 		return nil, err
 	}
@@ -166,6 +167,7 @@ type ProductServiceServer interface {
 	// server streaming RPC
 	GetProductServerStreaming(*ProductIdList, ProductService_GetProductServerStreamingServer) error
 	// client streaming RPC
+	// rpc GetProductClientStreaming(stream ProductIdList) returns (ProductList);
 	GetProductClientStreaming(ProductService_GetProductClientStreamingServer) error
 	// bidirectional RPC
 	GetProductBidirectionalStreaming(ProductService_GetProductBidirectionalStreamingServer) error
@@ -249,7 +251,7 @@ func _ProductService_GetProductServerStreaming_Handler(srv interface{}, stream g
 }
 
 type ProductService_GetProductServerStreamingServer interface {
-	Send(*ProductList) error
+	Send(*ProductIdResponse) error
 	grpc.ServerStream
 }
 
@@ -257,7 +259,7 @@ type productServiceGetProductServerStreamingServer struct {
 	grpc.ServerStream
 }
 
-func (x *productServiceGetProductServerStreamingServer) Send(m *ProductList) error {
+func (x *productServiceGetProductServerStreamingServer) Send(m *ProductIdResponse) error {
 	return x.ServerStream.SendMsg(m)
 }
 
@@ -266,8 +268,8 @@ func _ProductService_GetProductClientStreaming_Handler(srv interface{}, stream g
 }
 
 type ProductService_GetProductClientStreamingServer interface {
-	SendAndClose(*ProductList) error
-	Recv() (*ProductIdList, error)
+	SendAndClose(*ProductIdList) error
+	Recv() (*ProductIdRequest, error)
 	grpc.ServerStream
 }
 
@@ -275,12 +277,12 @@ type productServiceGetProductClientStreamingServer struct {
 	grpc.ServerStream
 }
 
-func (x *productServiceGetProductClientStreamingServer) SendAndClose(m *ProductList) error {
+func (x *productServiceGetProductClientStreamingServer) SendAndClose(m *ProductIdList) error {
 	return x.ServerStream.SendMsg(m)
 }
 
-func (x *productServiceGetProductClientStreamingServer) Recv() (*ProductIdList, error) {
-	m := new(ProductIdList)
+func (x *productServiceGetProductClientStreamingServer) Recv() (*ProductIdRequest, error) {
+	m := new(ProductIdRequest)
 	if err := x.ServerStream.RecvMsg(m); err != nil {
 		return nil, err
 	}
@@ -292,8 +294,8 @@ func _ProductService_GetProductBidirectionalStreaming_Handler(srv interface{}, s
 }
 
 type ProductService_GetProductBidirectionalStreamingServer interface {
-	Send(*ProductList) error
-	Recv() (*ProductIdList, error)
+	Send(*ProductIdResponse) error
+	Recv() (*ProductIdRequest, error)
 	grpc.ServerStream
 }
 
@@ -301,12 +303,12 @@ type productServiceGetProductBidirectionalStreamingServer struct {
 	grpc.ServerStream
 }
 
-func (x *productServiceGetProductBidirectionalStreamingServer) Send(m *ProductList) error {
+func (x *productServiceGetProductBidirectionalStreamingServer) Send(m *ProductIdResponse) error {
 	return x.ServerStream.SendMsg(m)
 }
 
-func (x *productServiceGetProductBidirectionalStreamingServer) Recv() (*ProductIdList, error) {
-	m := new(ProductIdList)
+func (x *productServiceGetProductBidirectionalStreamingServer) Recv() (*ProductIdRequest, error) {
+	m := new(ProductIdRequest)
 	if err := x.ServerStream.RecvMsg(m); err != nil {
 		return nil, err
 	}

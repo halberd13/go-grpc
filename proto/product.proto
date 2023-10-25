@@ -14,11 +14,12 @@ service ProductService {
     rpc GetProduct(NoParam) returns (Product);
     rpc GetProductById(ProductIdRequest) returns (Product);
     // server streaming RPC
-    rpc GetProductServerStreaming(ProductIdList) returns (stream ProductList);
+    rpc GetProductServerStreaming(ProductIdList) returns (stream ProductIdResponse);
     // client streaming RPC
-    rpc GetProductClientStreaming(stream ProductIdList) returns (ProductList);
+    // rpc GetProductClientStreaming(stream ProductIdList) returns (ProductList);
+    rpc GetProductClientStreaming(stream ProductIdRequest) returns (ProductIdList);
     // bidirectional RPC
-    rpc GetProductBidirectionalStreaming(stream ProductIdList) returns (stream ProductList);
+    rpc GetProductBidirectionalStreaming(stream ProductIdRequest) returns (stream ProductIdResponse);
 }
 
 // jika tidak mengirimkan parameter, tetap harus mendefinisikan NoParam
@@ -29,8 +30,12 @@ message ProductIdRequest {
     string product_id = 1;
 }
 
+message ProductIdResponse {
+    string productId = 1;
+}
+
 message ProductIdList {
-    repeated ProductIdRequest productIdRequest = 1;
+    repeated string productIds = 1;
 }
 
 message Product {
@@ -40,5 +45,5 @@ message Product {
 }
 
 message ProductList{
-    repeated Product product = 1;
+    repeated Product products = 1;
 }

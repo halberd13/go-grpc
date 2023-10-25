@@ -30,6 +30,7 @@ func main() {
 
 	// CallGetProduct(client)
 	// CallGetProductClientStream(client, products)
-	CallGetProductServerStream(client, products)
+	// CallGetProductServerStream(client, products)
+	CallGetProductBidirectionalStreaming(client, products)
 
 }
